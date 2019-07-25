@@ -10,7 +10,7 @@ class Profile(models.Model):
     profile_pic = models.ImageField(upload_to="ProfilePicture/")
     date = models.DateTimeField(auto_now_add=True,null=True)
     def __str__(self):
-        return self.name
+        return self.user
     
     def save_profile(self):
         self.save()
@@ -37,4 +37,19 @@ class Image(models.Model):
         image.objects.filter(id =self.pk).delete()
         
     def update_caption(self,**kwargs):
+        self.objects.filter(id = self.pk).update(**kwargs)
+class Commet(models.Model):
+    comment=models.CharField(max_length=150)
+    author =models.ForeignKey('Image',on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.author
+    
+    def save_comment(self):
+        self.save()
+        
+    def delete_comment(self):
+        comment.objects.filter(id =self.pk).delete()
+        
+    def update_comment(self,**kwargs):
         self.objects.filter(id = self.pk).update(**kwargs)
