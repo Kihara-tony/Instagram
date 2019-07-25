@@ -22,7 +22,7 @@ class Profile(models.Model):
         self.objects.filter(id = self.pk).update(**kwargs)
 class Image(models.Model):
     image =models.ImageField(upload_to = 'pics/',null=True)
-    name = models.CharField(ma_length=50)
+    name = models.CharField(max_length=50)
     caption=models.CharField(max_length =1000)
     profile=models.ForeignKey(User,on_delete=models.CASCADE,null='True',blank=True)
     likes=models.ManyToManyField('Profile',default=False,blank=True,related_name='likes')
