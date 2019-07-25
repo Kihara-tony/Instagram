@@ -1,0 +1,3 @@
+Hello {{name}}
+
+Welcome to Instagram You will find the most exciting news about other people
