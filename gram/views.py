@@ -81,4 +81,4 @@ def post_picture(request):
             return redirect(reverse('account',kwargs={'username':request.user.username}))
     else:
         form = PostImageForm()
-    return render(request,'post_pic.html',{'form':form}
+    return render(request,'post_pic.html',{'form':form})

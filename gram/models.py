@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from .models import ImageField
 from tinymce.models import HTMLField
 
 # Create your models here.
@@ -10,7 +9,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     followers = models.ManyToManyField('Profile',related_name='followers_profile',blank=True)
     following = models.ManyToManyField('Profile',related_name='following_profile',blank=True)
-    profile_pic = models.ImageField(upload_to='profile_pics',format='JPEG',options={'quality':100},null=True,blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pics',null=True,blank=True)
     bio = models.CharField(max_length=200,null=True,blank=True)
 
     def get_number_of_followers(self):
@@ -47,7 +46,7 @@ class Profile(models.Model):
 class Image(models.Model):
     image_title = models.CharField(max_length = 100)
     image_caption = HTMLField()
-    image = models.ImageField(upload_to = 'posts',format='JPEG',options={'quality':100})
+    image = models.ImageField(upload_to = 'posts')
     user_profile = models.ForeignKey(User,null=True,blank=True,on_delete = models.CASCADE)
     posted_on = models.DateTimeField(default=datetime.now)
     likes = models.ManyToManyField(User,related_name='likes',blank=True)
