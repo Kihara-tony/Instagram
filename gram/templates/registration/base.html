@@ -1,5 +1,5 @@
 {% load bootstrap3 %}
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -16,13 +16,18 @@
 
   {% block styles %}
     {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Londrina+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ewert&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet">
   {% endblock %}
 
 </head>
 
 <body>
 
-  {% block content %}  {%endblock%}
+  {% block content %}
+  {%endblock%}
 
 
   {% block scripts %}

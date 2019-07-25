@@ -1,0 +1,24 @@
+.instagram{
+    text-align: center;
+    font-family: 'Londrina Shadow', cursive;
+    font-size: 2.3em;
+}
+.paste{
+    text-align: center;
+    font-family: 'Ewert', cursive;
+    font-size: 1.6em;
+    color: green;
+}
+.panel-default{
+    border: 1px solid grey;
+    border-radius: 5px;
+    box-shadow: 2px 3px grey;
+}
+.container{
+    padding-bottom: 60px;
+}
+.tony{
+    background-image: url("https://wp-static.gofundme.com/2018/01/03160720/people-talking-at-event-e1532735505404-2272x1158.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}

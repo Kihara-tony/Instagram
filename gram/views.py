@@ -2,11 +2,11 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404,HttpResponseRedirect
 import datetime as dt
-from .models import Image,Profile,Comment
-from email import send_welcome_email
+from .models import Image,Profile
+# from email import send_welcome_email
 
 # Create your views here.
-@login_required
+@login_required(login_url="/accounts/login")
 def landing_page(request):
     return render(request,'index.html')
 def search_results(request):
