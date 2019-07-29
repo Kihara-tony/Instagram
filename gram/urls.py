@@ -4,12 +4,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns=[
-    url(r'im/(\d+)',views.image,name = 'singleImage'),
-    url(r'^$',views.account,name = 'account'),
-    url(r'^search/',views.search,name = 'search'),
-    url(r'^signout/$', views.signout, name='signout'),
-    url(r'^account/(?P<username>[-_\w.]+)/edit/$',views.profile_edit,name='profile_edit'),
-    url(r'^post/$',views.post_picture,name='post'),
+    url(r'^$',views.home_images,name='homePage'),
+    url(r'^search/', views.search_users, name='search_users'),
+    url(r'^image/(\d+)',views.image,name ='image'),
+    url(r'^users/', views.user_list, name = 'user_list'),
+    url(r'^new/image$', views.new_image, name='new_image'),
+    url(r'^edit/profile$', views.edit_profile, name='edit_profile'),
+    url(r'^profile/(?P<username>[0-9]+)$', views.individual_profile_page, name='individual_profile_page'),
+    url(r'^myprofile/$', views.myprofile, name='myprofile'),
 ]
-if settings.DEBUG:
-    urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
