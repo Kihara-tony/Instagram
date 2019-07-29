@@ -1,33 +1,42 @@
-{% extends 'base.html' %}
-{% load bootstrap4 %}
-{% load static custom_tags %}
+{%extends "registration/base.html"%} {% load bootstrap3 %} {%load static%} {% load staticfiles %} {% block content %}
 
-{% block content %}
-<div class="row">
-  <div class="col-md-3"></div>
-  <div style="margin-top:40px; padding:10px;" class="card col-md-6">
-    <div class="row">
-      <div class="col-md-4">
-        {% if user.profile.profile_pic %}
-        <img class="img-responsive" style=" border-radius: 50%; width:200px; height:200px;" src="{{user.profile.profile_pic.url}}">
-        {% else %}
-        <img src="https://instagram.fsaw1-9.fna.fbcdn.net/vp/fe6cd9cbba501d2f5c0ebc97b15a55ff/5C716EDF/t51.2885-19/38905493_2193354514245732_6791661364604567552_n.jpg?_nc_ad=z-m">
-        {% endif %}
-      </div>
-      <div class="col-md-3">
-        <h4 style="margin-top: 50px;">{{user.username}}</h4>
-      </div>
-      <div class="col-md-5"></div>
-    </div>
-    <hr>
-    <form class="" action="" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {% bootstrap_form form %}
-      <div class="form-group">
-        <input style="background-color:#1b95e0; color:#fff; border-radius:20px;" type="submit" class="btn btn-md d-flex mx-auto" value="Submit">
-      </div>
-    </form>
-  </div>
-  <div class="col-md-5"></div>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Edit Your Profile Information</title>
+  {{form.media}}
+
+{% block styles %} {% bootstrap_css %}
+  <link rel="stylesheet" href="{% static 'css/news.css' %}"> {% endblock %}
+
+</head>
+
+<body>
+<div class="container" style="background-color:#fff;">
+
+     <div class="row">
+
+
+  <form  action="{%url 'edit_profile'%}" method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+
+    {% bootstrap_form form%}
+    <input id="id_myfield" type="submit" class="btn btn-success btn-lg" value="Post">
+  </form>
+
+   {% block scripts %}
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  {% bootstrap_javascript %} {% endblock %}
+
+
+     </div>
 </div>
-{% endblock%}
+
+
+
+
+</body>
+{% endblock %}
