@@ -1,62 +1,95 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
-from .models import Image,Profile
+from .models import Location, tags, Image, Review, Followers, User, Profile
+from django.core.files.uploadedfile import SimpleUploadedFile
 
-# Create your tests here.
-class ProfileTestClass(TestCase):
+
+class tagsTestClass(TestCase):
+
     def setUp(self):
-        self.new_user = User.objects.create_user(username='user',password='user-password')
-        self.new_profile = Profile(id=1,user=self.new_user,profile_pic='photos/photo',bio='user bio')
-
+        self.test_tags = tags(name='funny')
+        self.test_tags.save()
+        # Testing instance
     def test_instance(self):
-        self.assertTrue(isinstance(self.new_profile,Profile))
+        self.assertTrue(isinstance(self.test_tags, tags))
+        # Testing Save method
+    def test_save_method(self):
+        tags = tags.objects.create(name='funny')
+        tags = tags.objects.all()
+        self.assertTrue(len(tags) > 0)
+    # Tear down method
+    def tearDown(self):
+        tags.objects.all().delete()
+        # Testing delete method
+    def test_delete_tags(self):
+        self.test_tags.delete()
+        self.assertEqual(len(tags.objects.all()), 0)
 
-    def test_save_profile(self):
-        self.new_profile.save_profile()
-        profiles = Profile.objects.all()
-        self.assertTrue(len(profiles) > 0)
 
-    def test_delete_profile(self):
-        self.new_profile.delete_profile()
-        profiles = Profile.objects.all()
-        self.assertTrue(len(profiles) == 0)
+class LocationTestClass(TestCase):
+    
+    def setUp(self):
+        self.test_location = Location(name = 'Nairobi')
+        self.test_location.save()
+    #Testing instance
+    def test_instance(self):
+        self.assertTrue(isinstance(self.test_location, Location))
+    #Testing Save method
+    def test_save_method(self):
+        locations = Location.objects.all()
+        self.assertTrue(len(locations)>0)
+    # Tear down method
+    def tearDown(self):
+        Location.objects.all().delete()
+        # Testing delete method
+    def test_delete_location(self):
+        self.test_location.delete()
+        self.assertEqual(len(Location.objects.all()), 0)
 
-    def test_update_bio(self):
-        self.new_profile.save_profile()
-        self.new_profile = Profile.objects.get(id=1)
-        profile = self.new_profile
-        profile.update_bio('changed user bio')
-        self.updated_profile = Profile.objects.get(id=1)
-        self.assertEqual(self.updated_profile.bio,'changed user bio')
 
 
 class ImageTestClass(TestCase):
+    # Set up method
     def setUp(self):
-        self.new_user = User.objects.create_user(username='user',password='user-password')
-        self.new_profile = Profile(user=self.new_user)
-        self.new_profile.save()
-        self.new_image = Image(id=1,image='photos/photo',image_title='Image',image_caption='Image caption',user_profile=self.new_user)
-
-    def test_instance(self):
-        self.assertTrue(isinstance(self.new_image,Image))
-
+        self.nairobi = Location.objects.create(name="nairobi")
+        self.funny= tags.objects.create(name='funny')
+        self.test_image = Image.objects.create(image='imagesef',name='cat',description='This is a description',location=self.nairobi,)
+        self.test_image.save()
+    def test_save_method(self):
+        self.test_image.save()
+        test_images = Image.objects.all()
+        self.assertTrue(len(test_images) > 0)
+    # Testing save method
     def test_save_image(self):
-        self.new_image.save()
-        images = Image.objects.all()
-        self.assertTrue(len(images) > 0)
-
-    def test_delete_image(self):
-        self.new_image.delete_image()
-        images = Image.objects.all()
-        self.assertTrue(len(images) == 0)
-
-    def test_update_caption(self):
-        self.new_image.save_image()
-        self.new_image = Image.objects.get(pk = 1)
-        self.new_image.update_caption('changed Image caption')
-        self.updated_image = Image.objects.get(id = 1)
-        self.assertEqual(self.updated_image.image_caption,"changed Image caption")
-
+        self.assertEqual(len(Image.objects.all()), 1)
+    # Tear down method
     def tearDown(self):
-        Profile.objects.all().delete()
         Image.objects.all().delete()
+    def test_delete_image(self):
+        Image.delete_image_by_id(self.test_image.id)
+        self.assertEqual(len(Image.objects.all()), 0)
+
+
+
+class Review(TestCase):
+    def setUp(self):
+        self.melissa = User.objects.create(username="tony")
+        self.picture = Image.objects.create(image='image4',user=self.tony)
+        self.comment = Review.objects.create(comment = 'nicephoto')
+        self.test_review = Review.objects.create(user=self.tony,image=self.picture,comment='nice photo')
+        self.test_review.save()
+    #Testing instance
+    def test_instance(self):
+        self.assertTrue(isinstance(self.test_reviews, Review))
+    #Testing Save method
+    def test_save_method(self):
+        reviews = Review.objects.all()
+        self.assertTrue(len(reviews)>0)
+    def test_save_review(self):
+        self.assertEqual(len(Review.objects.all()), 1)
+    # Tear down method
+    def tearDown(self):
+        Review.objects.all().delete()
+        # Testing delete method
+    def test_delete_review(self):
+        self.test_review.delete()
+        self.assertEqual(len(Review.objects.all()), 0)
