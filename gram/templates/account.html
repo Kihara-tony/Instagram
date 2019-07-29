@@ -1,42 +1,55 @@
-{% extends 'base.html' %}
-{% block content %}
-{{block.super}}
-<div class="container-fluid">
-  <div class="row" style="margin: 30px;">
-    <div class="col-md-2"></div>
-    <div class="col-md-3">
-      {% if profile.profile_pic %}
-      <img class="img-responsive" style=" border-radius: 50%; width:200px; height:200px;" src="{{profile.profile_pic.url}}">
-      {% else %}
-      <img src="https://instagram.fsaw1-9.fna.fbcdn.net/vp/fe6cd9cbba501d2f5c0ebc97b15a55ff/5C716EDF/t51.2885-19/38905493_2193354514245732_6791661364604567552_n.jpg?_nc_ad=z-m" alt="{{profile.username}} has no profile">
-      {% endif %}
-    </div>
-    <div class="col-md-5">
-      <h2>{{profile.user.username}} {% if profile.user.username != request.user.username %}<a href="#" style="color: #fff; background-color:#1b95e0; font-weight:bold" class="btn btn-sm">Follow</a>{% endif %}</h2>
-      <p style="margin-top:20px;">
-        {% autoescape on %}
-        {{profile.bio| safe}}
-        {% endautoescape %}
-      </p>
-      <div class="row">
-        <div class="col-md-3"><span style="font-weight:bold">{{images|length}}</span> posts</div>
-        <div class="col-md-3"><span style="font-weight:bold">{{profile.get_number_of_followers}}</span> followers</div>
-        <div class="col-md-3"><span style="font-weight:bold">{{profile.get_number_of_following}}</span> following</div>
-        <div class="col-md-3"></div>
-      </div>
-    </div>
-    <div class="col-md-2"></div>
-  </div>
-  <div style="margin-top:30px;" class="d-flex flex-row flex-wrap">
-    {% if images %}
-    {% for image in images %}
-    <div class="col-md-4 p-2">
-      <a href="{% url 'singleImage' image.id %}"><img class="img-responsive" style="width:400px; height:400px;" src="{{image.image.url}}" alt="{{image.image_title}}"></a>
-    </div>
-    {% endfor %}
-    {% else %}
-    <h3>{{message}}</h3>
-    {% endif %}
+{% extends 'base.html' %} {% load static %} {% load bootstrap3 %}{% block content %}
+<link href="https://fonts.googleapis.com/css?family=Charmonman|Dancing+Script|Kodchasan|Spirax|Abril+Fatface" rel="stylesheet">
+
+<div class="container">
+
+  <div class="jumbotron text-center mb-0" style="background-color:white;">
+
+    <h1 class="h1" style="font-family: 'Grand Hotel', cursive; color:blue;font-size:70px;">Instagram</h1>
+
   </div>
 </div>
+<div class="container">
+  <div class="card-columns">
+    {% for image in pictures %}
+    <div class="card border-secondary"><a href="{% url 'image' image.id %}">
+        <img src="{{image.image.url}}" data-target="#imageModal{{image.id}}" data-toggle="modal" alt="" class="img-fluid" id="eachimage"
+          size="100px200"></a>
+ <p style="font-family: 'Oswald', sans-serif;"> Caption : {{ image.description}}</p>
+      <p style="font-family: 'Oswald', sans-serif;">Posted by : {{ image.user}}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="jumbotron text-center mt-0" style="background-color:white;">
+  <form  action="{%url 'homePage'%}" method="post">
+    {%csrf_token%}
+    {% bootstrap_form letterForm  %}
+    <input type="submit" value="Subscribe To Instagram ">
+  </form>
+</div>
+<div class="container">
+    <div class="col-md-12">
+      <div class="footer text-center">
+        <ul id="footer1">
+          <li>ABOUT US</li>
+          <li>SUPPORT</li>
+          <li>PRESS</li>
+          <li>API</li>
+          <li>JOBS</li>
+          <li>PRIVACY</li>
+          <li>TERMS</li>
+          <li>DIRECTORY</li>
+          <li>PROFILES</li>
+          <li>HASHTAGS</li>
+          <li>LANGUAGE</li>
+          <br>
+
+          <li style="font-size:10px;"> <strong>© 2018 Tony KIhara</strong></li>
+        </ul>
+
+      </div>
+
+    </div>
+  </div>
 {% endblock %}
