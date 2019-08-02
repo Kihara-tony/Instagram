@@ -8,4 +8,4 @@ class ImageAdmin(admin.ModelAdmin):
 
 admin.site.register(Location)
 admin.site.register(tags)
-admin.site.register(Image, ImageAdmin)
+admin.site.register(Image)
