@@ -37,7 +37,7 @@ def home_images(request):
 
     return render(request, 'account.html', {'locations':locations,'tags': tags,'pictures':pictures, 'letterForm':form})
 
-def image(request, id):
+def image(request):
 
     try:
         image = Image.objects.get(pk = id)
@@ -61,7 +61,7 @@ def image(request, id):
         form = ReviewForm()
     return render(request, 'image.html', {"image": image,'form':form,'comments':comments,})
 
-@login_required(login_url='/accounts/login/')
+
 def new_image(request):
     current_user = request.user
     if request.method == 'POST':
@@ -80,9 +80,8 @@ def user_list(request):
     user_list = User.objects.all()
     context = {'user_list': user_list}
     return render(request, 'user_list.html', context)
-@login_required(login_url='/accounts/login/')
 def edit_profile(request):
-    current_user = request.user
+    current_user = User.objects.all()
     if request.method == 'POST':
         form = UpdatebioForm(request.POST, request.FILES)
         if form.is_valid():
@@ -94,7 +93,7 @@ def edit_profile(request):
         form = UpdatebioForm()
     return render(request, 'profile_edit.html', {"form": form})
 def search_users(request):
-    # search for a user by their username
+
     if 'user' in request.GET and request.GET["user"]:
         search_term = request.GET.get("user")
         searched_users = Profile.search_users(search_term)
@@ -103,7 +102,6 @@ def search_users(request):
     else:
         message = "You haven't searched for any person"
         return render(request, 'search.html', {"message": message})
-@login_required(login_url='/accounts/login/')
 def myprofile(request, username = None):
     if not username:
         username = request.user.username
@@ -122,7 +120,6 @@ def search_image(request):
         else:
             message = "You haven't searched for any image"
             return render(request, 'search.html', {"message": message})
-@login_required(login_url='/accounts/login/')
 def individual_profile_page(request, username):
     print(username)
     if not username:

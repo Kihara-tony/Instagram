@@ -45,8 +45,10 @@ class Location(models.Model):
     name = models.CharField(max_length=30)
     def save_location(self):
         self.save()
-    def delete_location(self):
-        self.delete()
+    def delete_location(self,**kwargs):
+        self.objects.filter(id=self.pk).delete(**kwargs)
+    def update_location(self,**kwargs):
+        self.objects.filter(id = self.pk).update(**kwargs)
     def __str__(self):
         return self.name
 
@@ -57,9 +59,10 @@ class tags(models.Model):
         return self.name
     def save_tags(self):
         self.save()
-    def delete_tags(self):
-        self.delete()
-
+    def delete_tags(self,**kwargs):
+        self.objects.filter(id=self.pk).delete(**kwargs)
+    def update_tags(self,**kwargs):
+        self.objects.filter(id = self.pk).update(**kwargs)
 
 class Image(models.Model):
     image=models.ImageField(upload_to='picture/',default='image' )
@@ -70,35 +73,41 @@ class Image(models.Model):
     tags=models.ManyToManyField(tags, blank=True)
     likes = models.IntegerField(default=0)
     comments= models.TextField(blank=True)
-
     def __str__(self):
         return self.name
     def save_image(self):
         self.save()
+    def delete_image(self):
+        image.objects.filter(id =self.pk).delete()
+    def update_image(self,**kwargs):
+        self.objects.filter(id = self.pk).update(**kwargs)
+    @classmethod
+    def all_pictures(cls):
+        pictures = cls.objects.all()
+        return pictures 
 
     @classmethod
-    def delete_image_by_id(cls, id):
-        pictures = cls.objects.filter(pk=id)
-        pictures.delete()
+    def pictures_locations(cls):
+        pictures = cls.objects.order_by('location')
+        return pictures 
+
+
     @classmethod
-    def get_image_by_id(cls, id):
-        pictures = cls.objects.get(pk=id)
+    def get_pictures(cls, id):
+        pictures = cls.objects.get(id=id)
         return pictures
+
     @classmethod
-    def filter_by_tag(cls, tags):
-        pictures = cls.objects.filter(tags=tags)
-        return pictures
+    def search_images(cls, search_term):
+        images = cls.objects.filter(name__icontains=search_term)
+        return images
     @classmethod
-    def filter_by_location(cls, location):
-        pictures = cls.objects.filter(location=location)
+    def pictures_tag(cls, tags):
+        pictures = cls.objects.order_by(tags=tags)
         return pictures
     @classmethod
     def search_image(cls, search_term):
         pictures = cls.objects.filter(name__icontains=search_term)
-        return pictures
-    @classmethod
-    def update_image(cls, id):
-        pictures=cls.objects.filter(id=id).update(id=id)
         return pictures
     @classmethod
     def update_description(cls, id):

@@ -1,6 +1,6 @@
 from .models import Image, Review, Profile
 from django import forms
-from django.forms import ModelForm, Textarea, IntegerField
+from django.forms import ModelForm, Textarea
 
 
 class NewImageForm(forms.ModelForm):
