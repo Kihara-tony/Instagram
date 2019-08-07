@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row">
-    {% for pic in all_images %}
-            <p>{{pic.description}}</p>
-            <img src="{{pic.image.url}}" alt="{{pic.name}}" class="img-fluid myimage">
+<div class="container" style="padding-bottom: 20px;">
+        {% for pic in all_images %}
+    <div class="row" style="border-radius: 8px;border: 2px solid grey;width: 30%;margin-left: 50%;">
+            <div class="col-md-2" style="">
+                    <img src="{{pic.image.url}}" alt="{{pic.name}}" class="img-fluid myimage" style="width: 300px">
+                    <p>{{pic.description}}</p>
+                    <p>like: <i class="fal fa-heart-square"></i></p>
+                    <p>Comment: <i class="fal fa-comment"></i></p>
+            </div>
+    </div>
+    
+            
     {% endfor %}
 </div>
 
