@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load bootstrap4 %}
-{% load utils %}
+{% load bootstrap3 %}
 {% block content %}
 <div class="row userbody">
     <div id="userdetails" class="row col-12 mb-2">
@@ -10,7 +9,7 @@
         <div class="col-sm-8">
             <div style="margin-bottom: 20px;">
                 <h3 style="vertical-align: middle">{{username.username}}</h3>
-                <a href="{%  url 'edit' %}">
+                <a href="{%  url 'profile' %}">
                     <button class="editbtn">
                         <span class="edittext">Edit Profile</span>
                     </button>
@@ -54,7 +53,7 @@
 
 
 
-    {% for image in images %}
+    {% for image in all_images %}
 
 
     <div class="card border-secondary"><a href="{% url 'image' image.id %}">

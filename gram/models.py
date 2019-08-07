@@ -1,147 +1,54 @@
 from django.db import models
-from django.contrib.auth.models import User
-import datetime as dt
-from django.forms import IntegerField
 
+#Import User method for django
+from django.contrib.auth.models import User
+import datetime
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Profile(models.Model):
-    class Meta:
-        db_table = 'profile'
-    bio = models.TextField(max_length=200, null=True, blank=True, default="bio")
-    profilepic = models.ImageField(upload_to='picture/', null=True, blank=True)
-    user=models.OneToOneField(User, on_delete=models.CASCADE, blank=True, related_name="profile")
-    followers = models.ManyToManyField(User, related_name="followers", blank=True)
-    following = models.ManyToManyField(User, related_name="following", blank=True)
 
+    user = models.OneToOneField(User,on_delete=models.CASCADE,)
+    first_name = models.CharField(max_length=30,default=True)
+    last_name = models.CharField(max_length=30,default=True)
+    bio = models.CharField(max_length=350,default=True) 
+    profile_pic = models.ImageField(upload_to='ProfilePicture/',default=True)
+    profile_avatar = models.ImageField(upload_to='AvatorPicture/',default=True)
+    date = models.DateTimeField(auto_now_add=True, null= True)  
+    def __str__(self):
+        return self.profile.user
     def save_profile(self):
         self.save()
-    def delete_profile(self):
-        self.delete()
-    def follow_user(self, follower):
-        return self.following.add(follower)
-    def unfollow_user(self, to_unfollow):
-        return self.following.remove(to_unfollow)
-    def is_following(self, checkuser):
-        return checkuser in self.following.all()
-    def get_number_of_followers(self):
-        if self.followers.count():
-            return self.followers.count()
-        else:
-            return 0
-    def get_number_of_following(self):
-        if self.following.count():
-            return self.following.count()
-        else:
-            return 0
-    @classmethod
-    def search_users(cls, search_term):
-        profiles = cls.objects.filter(user__username__icontains=search_term)
-        return profiles
-    def __str__(self):
-        return self.user.username
 
-
-class Location(models.Model):
-    name = models.CharField(max_length=30)
-    def save_location(self):
-        self.save()
-    def delete_location(self,**kwargs):
-        self.objects.filter(id=self.pk).delete(**kwargs)
-    def update_location(self,**kwargs):
-        self.objects.filter(id = self.pk).update(**kwargs)
-    def __str__(self):
-        return self.name
-
-
-class tags(models.Model):
-    name = models.CharField(max_length=30)
-    def __str__(self):
-        return self.name
-    def save_tags(self):
-        self.save()
-    def delete_tags(self,**kwargs):
-        self.objects.filter(id=self.pk).delete(**kwargs)
-    def update_tags(self,**kwargs):
-        self.objects.filter(id = self.pk).update(**kwargs)
+    def delete_profile(self,cls):
+        cls.objects.get(id = self.id).delete()
 
 class Image(models.Model):
-    image=models.ImageField(upload_to='picture/',default='image' )
-    name = models.CharField(max_length=40)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, default="images")
-    description=models.TextField(max_length=2000, null=True, blank=True, default="description")
-    location=models.ForeignKey(Location, null=True)
-    tags=models.ManyToManyField(tags, blank=True)
-    likes = models.IntegerField(default=0)
-    comments= models.TextField(blank=True)
+    image = models.ImageField(upload_to ='pictsagram/',default='Tony')
+    image_caption = models.CharField(max_length=700 ,default=True)
+    tag_someone = models.CharField(max_length=50,blank=True)
+    imageuploader_profile = models.ForeignKey(User, on_delete=models.CASCADE,null='True', blank=True)
+    image_likes = models.ManyToManyField('Profile', default=False, blank=True, related_name='likes')
+    date = models.DateTimeField(auto_now_add=True, null= True)
     def __str__(self):
-        return self.name
+        return self.image_caption
     def save_image(self):
         self.save()
-    def delete_image(self):
-        image.objects.filter(id =self.pk).delete()
-    def update_image(self,**kwargs):
-        self.objects.filter(id = self.pk).update(**kwargs)
-    @classmethod
-    def all_pictures(cls):
-        pictures = cls.objects.all()
-        return pictures 
 
-    @classmethod
-    def pictures_locations(cls):
-        pictures = cls.objects.order_by('location')
-        return pictures 
+    def delete_image(self,cls):
+        cls.objects.get(id = self.id).delete()
 
 
-    @classmethod
-    def get_pictures(cls, id):
-        pictures = cls.objects.get(id=id)
-        return pictures
-
-    @classmethod
-    def search_images(cls, search_term):
-        images = cls.objects.filter(name__icontains=search_term)
-        return images
-    @classmethod
-    def pictures_tag(cls, tags):
-        pictures = cls.objects.order_by(tags=tags)
-        return pictures
-    @classmethod
-    def search_image(cls, search_term):
-        pictures = cls.objects.filter(name__icontains=search_term)
-        return pictures
-    @classmethod
-    def update_description(cls, id):
-        pictures = cls.objects.filter(id=id).update(id=id)
-        return pictures
-
-class Followers(models.Model):
-    user = models.CharField(max_length=20, default="")
-    follower = models.CharField(max_length=20, default="")
-
-
-class Review(models.Model):
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='user')
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="review")
-    comment = models.TextField()
+class Comments (models.Model):
+    comment_post = models.CharField(max_length=150)
+    author = models.ForeignKey('Profile',related_name='commenter' , on_delete=models.CASCADE)
+    commented_image = models.ForeignKey('Image', on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.author
     def save_comment(self):
         self.save()
-    def get_comment(self, id):
-        comments = Review.objects.filter(image_id =id)
-        return comments
-    def __str__(self):
-        return self.comment
 
-class NewsLetterRecipients(models.Model):
-    name = models.CharField(max_length = 30)
-    email = models.EmailField()
-
-class Like(models.Model):
-    user = models.ForeignKey(User)
-    image = models.ForeignKey(Image)
-    value = models.IntegerField(default=True, null=True, blank=True)
-    def save_like(self):
-        self.save()
-    def __str__(self):
-        return str(self.user) + ':' + str(self.image) + ':' + str(self.value)
-    class Meta:
-        unique_together = ("user", "image", "value")
+    def delete_comment(self,cls):
+        cls.objects.get(id = self.id).delete()
+    

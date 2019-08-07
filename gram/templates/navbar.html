@@ -8,10 +8,8 @@
     </div>
     <div class="col-sm-6 col-md-6" style="margin-left: 20px;margin-top:40px;">
 
-      <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="{%url 'edit_profile'%}">Update Profile</a>
-
-      <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="{% url 'individual_profile_page'%}">My Profile</a>
-                   <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="{% url 'new_image'%}">Upload</a>
+      <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="{%url 'profile'%}">Update Profile</a>
+                   <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="{% url 'upload'%}">Upload</a>
       <a style="font-family: 'Oswald', sans-serif;padding-right: 30px;" href="/accounts/password/change">Change Password</a>
 
         <a style="font-family: 'Oswald', sans-serif;" href="/logout">Logout</a>
@@ -21,7 +19,7 @@
     <!-- Adding a search form  -->
     <div class="col-sm-4 col-md-4 navbar-right" style="margin-top: 20px;margin-right:-60px;">
 
-      <form class="navbar-form" role="search" action="{% url 'search_users' %}">
+      <form class="navbar-form" role="search" action="/">
 
         <div class="input-group">
           <input type="text" class="form-control mr-sm-4" placeholder="Search User" name="user">

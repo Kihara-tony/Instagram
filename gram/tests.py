@@ -1,51 +1,6 @@
 from django.test import TestCase
-from .models import Location, tags, Image, Review, Followers, User, Profile
+from .models import Image, Review, Followers, User, Profile
 from django.core.files.uploadedfile import SimpleUploadedFile
-
-
-class tagsTestClass(TestCase):
-
-    def setUp(self):
-        self.test_tags = tags(name='funny')
-        self.test_tags.save()
-        # Testing instance
-    def test_instance(self):
-        self.assertTrue(isinstance(self.test_tags, tags))
-        # Testing Save method
-    def test_save_method(self):
-        tags = tags.objects.create(name='funny')
-        tags = tags.objects.all()
-        self.assertTrue(len(tags) > 0)
-    # Tear down method
-    def tearDown(self):
-        tags.objects.all().delete()
-        # Testing delete method
-    def test_delete_tags(self):
-        self.test_tags.delete()
-        self.assertEqual(len(tags.objects.all()), 0)
-
-
-class LocationTestClass(TestCase):
-    
-    def setUp(self):
-        self.test_location = Location(name = 'Nairobi')
-        self.test_location.save()
-    #Testing instance
-    def test_instance(self):
-        self.assertTrue(isinstance(self.test_location, Location))
-    #Testing Save method
-    def test_save_method(self):
-        locations = Location.objects.all()
-        self.assertTrue(len(locations)>0)
-    # Tear down method
-    def tearDown(self):
-        Location.objects.all().delete()
-        # Testing delete method
-    def test_delete_location(self):
-        self.test_location.delete()
-        self.assertEqual(len(Location.objects.all()), 0)
-
-
 
 class ImageTestClass(TestCase):
     # Set up method

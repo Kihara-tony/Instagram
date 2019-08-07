@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row">
-    {% for pic in all_pictures %}
-            <p>{{pic.tag}}</p>
+    {% for pic in all_images %}
             <p>{{pic.description}}</p>
             <img src="{{pic.image.url}}" alt="{{pic.name}}" class="img-fluid myimage">
     {% endfor %}

@@ -1,139 +1,52 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Image,Location,tags, Profile, Review, NewsLetterRecipients, Like
-from django.http  import HttpResponse, Http404, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.conf.urls import url,include
+from django.contrib.auth import authenticate, login, logout
+from .forms import PostForm
+from django.conf.urls.static import static
+from .models import Profile, Image
 from django.contrib.auth.models import User
-from .forms import NewImageForm, UpdatebioForm, ReviewForm
-from .email import send_welcome_email
-from .forms import NewsLetterForm
-
-# Views
-tags = tags.objects.all()
+from . import models
+from annoying.decorators import ajax_request
+from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/accounts/login/')
-def home_images(request):
-    locations = Location.objects.all()
-    if request.GET.get('location'):
-        pictures = Image.filter_by_location(request.GET.get('location'))
-    elif request.GET.get('tags'):
-        pictures = Image.filter_by_tag(request.GET.get('tags'))
-    elif request.GET.get('search_term'):
-        pictures = Image.search_image(request.GET.get('search_term'))
-    else:
-        pictures = Image.objects.all()
-    form = NewsLetterForm
-    if request.method == 'POST':
-        form = NewsLetterForm(request.POST or None)
-        if form.is_valid():
-            name = form.cleaned_data['your_name']
-            email = form.cleaned_data['email']
+def index(request):
+    all_images = Image.objects.all()
+    all_users = Profile.objects.all()
+    next = request.GET.get('next')
+    if next: return redirect(next)
+    return render(request, 'account.html',  {"all_images": all_images}, {"all_users":all_users})
 
-            recipient = NewsLetterRecipients(name=name, email=email)
-            recipient.save()
-            send_welcome_email(name, email)
+def explore(request):
+    return render(request, 'user_list.html')
 
-            HttpResponseRedirect('home_images')
 
-    return render(request, 'account.html', {'locations':locations,'tags': tags,'pictures':pictures, 'letterForm':form})
 
-def image(request):
+def profile(request):
+    return render(request, 'profile.html')
 
-    try:
-        image = Image.objects.get(pk = id)
+def logout(request):
+    return render(request, 'registration/logout.html')
 
-    except DoesNotExist:
-        raise Http404()
 
+def login(request):
+    return render(request, 'registration/login.html')
+    
+
+def upload(request):
     current_user = request.user
-    comments = Review.get_comment(Review, id)
+    p = Profile.objects.filter(id=current_user.id).first()
+    imageuploader_profile = Image.objects.filter(imageuploader_profile=p).all()
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        form = PostForm(request.POST,request.FILES)
         if form.is_valid():
-            comment = form.cleaned_data['comment']
-            review = Review()
-            review.image = image
-            review.user = current_user
-            review.comment = comment
-            review.save()
-
+            post = form.save(commit=False)
+            post.imageuploader_profile= p
+            post.save()
+            return redirect('index')
     else:
-        form = ReviewForm()
-    return render(request, 'image.html', {"image": image,'form':form,'comments':comments,})
-
-
-def new_image(request):
-    current_user = request.user
-    if request.method == 'POST':
-        form = NewImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = form.save(commit=False)
-            image.user = current_user
-            image.save()
-        return redirect('homePage')
-
-    else:
-        form = NewImageForm()
+        form =PostForm
     return render(request, 'post_pic.html', {"form": form})
-# Viewing a single picture
-def user_list(request):
-    user_list = User.objects.all()
-    context = {'user_list': user_list}
-    return render(request, 'user_list.html', context)
-def edit_profile(request):
-    current_user = User.objects.all()
-    if request.method == 'POST':
-        form = UpdatebioForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = form.save(commit=False)
-            image.user = current_user
-            image.save()
-        return redirect('homePage')
-    else:
-        form = UpdatebioForm()
-    return render(request, 'profile_edit.html', {"form": form})
-def search_users(request):
-
-    if 'user' in request.GET and request.GET["user"]:
-        search_term = request.GET.get("user")
-        searched_users = Profile.search_users(search_term)
-        message = f"{search_term}"
-        return render(request, 'search.html', {"message": message, "profiles": searched_users})
-    else:
-        message = "You haven't searched for any person"
-        return render(request, 'search.html', {"message": message})
-def myprofile(request, username = None):
-    if not username:
-        username = request.user.username
-    # images by user id
-    images = Image.objects.filter(user=username)
-    return render(request, 'profile.html', locals())
-# Search for an image
-def search_image(request):
-        # search for an image by the description of the image
-        if 'image' in request.GET and request.GET["image"]:
-            search_term = request.GET.get("image")
-            searched_images = Image.search_image(search_term)
-            message = f"{search_term}"
-
-            return render(request, 'search.html', {"message": message, "pictures": searched_images})
-        else:
-            message = "You haven't searched for any image"
-            return render(request, 'search.html', {"message": message})
-def individual_profile_page(request, username):
-    print(username)
-    if not username:
-        username = request.user.username
-    # images by user id
-    images = Image.objects.filter(user_id=username)
-    user = request.user
-    profile = Profile.objects.get(user=user)
-    userf = User.objects.get(pk=username)
-    if userf:
-        print('user found')
-        profile = Profile.objects.get(user=userf)
-    else:
-        print('No suchuser')
-    return render (request, 'user_list.html', {'images':images,'profile':profile,'user':user,'username': username})
-
-
